@@ -25,13 +25,15 @@ public class SecurityConfig {
     // Instance of JwtAuthenticationFilter for JWT token processing
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     // Constructor to initialize UserDetailsServiceImpl and JwtAuthenticationFilter instances
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
-                          JwtAuthenticationFilter jwtAuthenticationFilter) {
+                          JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     // Bean definition for SecurityFilterChain to configure security settings
@@ -48,6 +50,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()) // Require authentication for all other requests
                 .userDetailsService(userDetailsServiceImpl) // Set UserDetailsServiceImpl as the user details service
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Configure session management to be stateless
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT
                 // authentication filter before UsernamePasswordAuthenticationFilter

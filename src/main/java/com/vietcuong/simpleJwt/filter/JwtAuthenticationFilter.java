@@ -52,8 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             // Validate JWT token using JwtService and UserDetails
+
             if (jwtService.isTokenValid(token, userDetails)) {
-                // Create authentication token (UsernamePasswordAuthenticationToken) with UserDetails and authorities
+                // Create authentication token (UsernamePasswordAuthenticationToken) with UserDetails and
+                // authorities
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
 
@@ -63,6 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Set authenticated token in SecurityContextHolder
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+
         }
 
         // Continue with the filter chain
