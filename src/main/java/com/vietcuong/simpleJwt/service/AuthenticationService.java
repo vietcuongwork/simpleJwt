@@ -49,7 +49,7 @@ public class AuthenticationService {
         String token = jwtService.generateToken(user);
 
         // Return an AuthenticationResponse containing the generated token
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, "Registered successfully");
     }
 
     // Method to handle user authentication and generate an authentication token
@@ -65,6 +65,6 @@ public class AuthenticationService {
         String token = jwtService.generateToken(user);
 
         // Return an AuthenticationResponse containing the generated token
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, "Logged in");
     }
 }

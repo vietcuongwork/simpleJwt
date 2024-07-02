@@ -16,10 +16,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    // Method to load user details by username or throw UsernameNotFoundException if not found
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findByUsername(username).orElseThrow(() -> {
-            return new UsernameNotFoundException("User not found!");
-        });
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not " +
+                "found: " + username));
+    }
+
+    public Boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 }

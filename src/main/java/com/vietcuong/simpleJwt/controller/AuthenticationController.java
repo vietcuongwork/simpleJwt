@@ -3,7 +3,10 @@ package com.vietcuong.simpleJwt.controller;
 import com.vietcuong.simpleJwt.entity.AuthenticationResponse;
 import com.vietcuong.simpleJwt.entity.User;
 import com.vietcuong.simpleJwt.service.AuthenticationService;
+import com.vietcuong.simpleJwt.service.JwtService;
+import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
 import com.vietcuong.simpleJwt.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,30 +22,41 @@ public class AuthenticationController {
     // Service for handling user-related operations
     private final UserService userService;
 
+    private final UserDetailsServiceImpl userDetailsService;
+
     // Constructor to initialize AuthenticationService and UserService dependencies
-    public AuthenticationController(AuthenticationService authenticationService, UserService userService) {
+    public AuthenticationController(AuthenticationService authenticationService, UserService userService,
+                                    UserDetailsServiceImpl userDetailsService) {
         this.authenticationService = authenticationService;
         this.userService = userService;
+        this.userDetailsService = userDetailsService;
     }
 
     // Endpoint to handle user registration
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody User userRequest) {
+    public ResponseEntity<?> register(@RequestBody User userRequest) {
         // Delegate registration logic to AuthenticationService and return the response
+        if (userDetailsService.existsByUsername(userRequest.getUsername())) {
+            return new ResponseEntity<String>("Username has already been used", HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(authenticationService.registerResponse(userRequest));
     }
 
     // Endpoint to handle user login
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody User userRequest) {
+    public ResponseEntity<?> login(@RequestBody User userRequest) {
         // Delegate login logic to AuthenticationService and return the response
-        return ResponseEntity.ok(authenticationService.authenticationResponse(userRequest));
+        if (userDetailsService.existsByUsername(userRequest.getUsername())) {
+            return ResponseEntity.ok(authenticationService.authenticationResponse(userRequest));
+        }
+        return new ResponseEntity<String>("Incorrect username or password", HttpStatus.BAD_REQUEST);
     }
 
     // Endpoint to retrieve all users as a list of strings
     @GetMapping("/getAllUsers")
     public ResponseEntity<List<String>> getAllUser() {
         // Retrieve all users from UserService and convert to a list of strings
+
         List<String> userList = userService.allUsersToString();
         return ResponseEntity.ok(userList);
     }

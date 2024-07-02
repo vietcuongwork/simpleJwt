@@ -32,7 +32,7 @@ public class JwtService {
 
     // Method to generate a JWT token for a given user
     public String generateToken(User user) {
-        return Jwts.builder().subject(user.getUsername()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 24 * 3600 * 1000)) // Token valid for 24 hours
+        return Jwts.builder().subject(user.getUsername()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 1000*60)) // Token valid for 24 hours
                 .signWith(this.getSecretKey()).compact();
     }
 

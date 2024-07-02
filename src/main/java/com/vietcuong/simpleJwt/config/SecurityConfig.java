@@ -25,16 +25,19 @@ public class SecurityConfig {
     // Instance of JwtAuthenticationFilter for JWT token processing
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+
     // Constructor to initialize UserDetailsServiceImpl and JwtAuthenticationFilter instances
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
                           JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+
     }
 
     // Bean definition for SecurityFilterChain to configure security settings
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(request -> request.requestMatchers("/login/**", "/register/**").permitAll() //
                         // Permit access to login and register endpoints without authentication
