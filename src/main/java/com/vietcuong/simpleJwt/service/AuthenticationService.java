@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+
 @Service
 public class AuthenticationService {
 
@@ -47,9 +49,10 @@ public class AuthenticationService {
 
         // Generate a JWT token for the registered user
         String token = jwtService.generateToken(user);
-
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        String formattedTime = timeFormat.format(jwtService.extractExpirationTime(token));
         // Return an AuthenticationResponse containing the generated token
-        return new AuthenticationResponse(token, "Registered successfully");
+        return new AuthenticationResponse(token, "Registered successfully", formattedTime);
     }
 
     // Method to handle user authentication and generate an authentication token
@@ -63,8 +66,9 @@ public class AuthenticationService {
 
         // Generate a JWT token for the authenticated user
         String token = jwtService.generateToken(user);
-
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        String formattedTime = timeFormat.format(jwtService.extractExpirationTime(token));
         // Return an AuthenticationResponse containing the generated token
-        return new AuthenticationResponse(token, "Logged in");
+        return new AuthenticationResponse(token, "Logged in", formattedTime);
     }
 }

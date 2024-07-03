@@ -29,7 +29,8 @@ public class SecurityConfig {
 
     // Constructor to initialize UserDetailsServiceImpl and JwtAuthenticationFilter instances
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
-                          JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                          JwtAuthenticationFilter jwtAuthenticationFilter,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 
@@ -42,14 +43,10 @@ public class SecurityConfig {
 
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(request -> request.requestMatchers("/login/**", "/register/**").permitAll() //
-                        // Permit access to login and register endpoints without authentication
-                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER") // Require ADMIN or USER
-                        // authority for endpoints under /user/**
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN") // Require ADMIN authority for endpoints
-                        // under /admin/**
-                        .anyRequest().authenticated()) // Require authentication for all other requests
-                .userDetailsService(userDetailsServiceImpl) // Set UserDetailsServiceImpl as the user details service
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
+
+                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .anyRequest().authenticated()).userDetailsService(userDetailsServiceImpl).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Configure session management to be stateless
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT

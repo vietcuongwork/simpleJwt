@@ -35,7 +35,7 @@ public class JwtService {
 
     // Method to generate a JWT token for a given user
     public String generateToken(User user) {
-        return Jwts.builder().subject(user.getUsername()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 1000 * 60)) // Token valid for 24 hours
+        return Jwts.builder().subject(user.getUsername()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5)) // Token valid for 24 hours
                 .signWith(this.getSecretKey()).compact();
     }
 
@@ -56,7 +56,7 @@ public class JwtService {
     }
 
     // Method to extract the expiration time from a JWT token
-    private Date extractExpirationTime(String token) {
+    public Date extractExpirationTime(String token) {
         return this.extractSpecificClaim(token, Claims::getExpiration);
     }
 

@@ -4,10 +4,13 @@ import com.vietcuong.simpleJwt.exception.ExpiredJwtTokenException;
 import com.vietcuong.simpleJwt.exception.InvalidJwtTokenException;
 import com.vietcuong.simpleJwt.service.JwtService;
 import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +23,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -32,31 +36,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // Retrieve 'Authorization' header from HTTP request
+
         String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer")) {
+            try {
 
-        // Check if 'Authorization' header is absent or does not start with 'Bearer'
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
-            // If conditions are not met, continue with the filter chain
-            filterChain.doFilter(request, response);
-            return;
-        }
+                String token = authHeader.substring(7);
+                String username = jwtService.extractUsername(token);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        String token = authHeader.substring(7);
-        try {
-            String username = jwtService.extractUsername(token);
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                if (jwtService.isTokenValid(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    if (jwtService.isTokenValid(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null,
+                                        userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                        logger.info("JWT token validated successfully for user: {}", username);
+                    }
                 }
+            } catch (JwtException e) {
+                request.setAttribute("exception", e.getMessage());
             }
-        } catch (ExpiredJwtTokenException | InvalidJwtTokenException e) {
-            request.setAttribute("exception", e.getMessage());
+        }
+        else {
+            filterChain.doFilter(request,response);
+            return;
         }
         filterChain.doFilter(request, response);
 

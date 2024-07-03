@@ -49,7 +49,7 @@ public class AuthenticationController {
         if (userDetailsService.existsByUsername(userRequest.getUsername())) {
             return ResponseEntity.ok(authenticationService.authenticationResponse(userRequest));
         }
-        return new ResponseEntity<String>("Incorrect username or password", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("Incorrect username", HttpStatus.BAD_REQUEST);
     }
 
     // Endpoint to retrieve all users as a list of strings
