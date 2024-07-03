@@ -1,13 +1,13 @@
 package com.vietcuong.simpleJwt.filter;
 
+import com.vietcuong.simpleJwt.exception.ExpiredJwtTokenException;
+import com.vietcuong.simpleJwt.exception.InvalidJwtTokenException;
 import com.vietcuong.simpleJwt.service.JwtService;
 import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,35 +42,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Extract JWT token from 'Authorization' header
         String token = authHeader.substring(7);
+        try {
+            String username = jwtService.extractUsername(token);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        // Extract username from JWT token using JwtService
-        String username = jwtService.extractUsername(token);
-
-        // Check if username is retrieved from the token and if user is not already authenticated
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Load UserDetails from database using userDetailsService based on username
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            // Validate JWT token using JwtService and UserDetails
-
-            if (jwtService.isTokenValid(token, userDetails)) {
-                // Create authentication token (UsernamePasswordAuthenticationToken) with UserDetails and
-                // authorities
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-                        null, userDetails.getAuthorities());
-
-                // Set authentication details from HTTP request
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // Set authenticated token in SecurityContextHolder
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
-
+        } catch (ExpiredJwtTokenException | InvalidJwtTokenException e) {
+            request.setAttribute("exception", e.getMessage());
         }
-
-        // Continue with the filter chain
         filterChain.doFilter(request, response);
 
     }
