@@ -1,6 +1,7 @@
 package com.vietcuong.simpleJwt.service;
 
 import com.vietcuong.simpleJwt.entity.User;
+import com.vietcuong.simpleJwt.repository.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -18,9 +19,11 @@ public class JwtService {
 
     // Secret key used for JWT signing and verification
     private final String SECRET_KEY = "bb89cd30d2a1a8deb78d86d9e442046e9d829df36633379ac855753a52eeed2a";
+    private final TokenRepository tokenRepository;
 
     // Default constructor
-    public JwtService() {
+    public JwtService(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
     }
 
     // Method to get the SecretKey instance from the secret key string
@@ -64,9 +67,15 @@ public class JwtService {
 
     // Method to validate if a JWT token is valid for a given user details
     public boolean isTokenValid(String token, UserDetails userDetails) {
+        // Extract the username from the JWT token
         String username = this.extractUsername(token);
-        // Compare the extracted username with the username from UserDetails and check if token is not expired
-        return username.equals(userDetails.getUsername()) && !this.isTokenExpired(token);
+
+        // Check if the token is present in the tokenRepository and is not logged out
+        boolean isValidToken = tokenRepository.findByToken(token).map(t -> !t.isLoggedOut()).orElse(false);
+
+        // Compare the extracted username with the username from UserDetails
+        // Check if the token is not expired and is valid according to the repository
+        return username.equals(userDetails.getUsername()) && !this.isTokenExpired(token) && isValidToken;
     }
 
 }

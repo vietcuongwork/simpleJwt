@@ -61,7 +61,7 @@ public class AuthenticationController {
         // Retrieve all users from UserService and convert to a list of strings
 
         List<String> userList = userService.allUsersToString();
-        return ResponseEntity.ok(userList);
+          return ResponseEntity.ok(userList);
     }
 
     // Endpoint to delete a user by ID (admin privilege required)

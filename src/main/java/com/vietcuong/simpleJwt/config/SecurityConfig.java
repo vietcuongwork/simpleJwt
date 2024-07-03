@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,14 +28,17 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+    private final CustomLogoutHandler logoutHandler;
+
     // Constructor to initialize UserDetailsServiceImpl and JwtAuthenticationFilter instances
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, CustomLogoutHandler logoutHandler) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.logoutHandler = logoutHandler;
     }
 
     // Bean definition for SecurityFilterChain to configure security settings
@@ -44,13 +48,14 @@ public class SecurityConfig {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(request -> request.requestMatchers("/login/**", "/register/**").permitAll() //
 
-                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .anyRequest().authenticated()).userDetailsService(userDetailsServiceImpl).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
+                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER").requestMatchers("/admin/**").hasAuthority("ADMIN").anyRequest().authenticated()).userDetailsService(userDetailsServiceImpl).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Configure session management to be stateless
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT
                 // authentication filter before UsernamePasswordAuthenticationFilter
+                .logout(l -> l.logoutUrl("/logout").addLogoutHandler(logoutHandler).logoutSuccessHandler((request,
+                                                                                                          response,
+                                                                                                          authentication) -> SecurityContextHolder.clearContext()))
                 .build();
     }
 
