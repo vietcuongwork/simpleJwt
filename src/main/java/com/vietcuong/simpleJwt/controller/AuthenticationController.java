@@ -63,9 +63,12 @@ public class AuthenticationController {
 
     // Endpoint to delete a user by ID (admin privilege required)
     @DeleteMapping("/admin/deleteUser")
-    public ResponseEntity<Void> deleteUser(@RequestBody User userRequest) {
+    public ResponseEntity<?> deleteUser(@RequestBody User userRequest) {
         // Delegate delete user logic to UserService based on user ID
+        if(!userDetailsService.existsByUsername(userRequest.getUsername())){
+            return new ResponseEntity<String>("User doesn't exist", HttpStatus.BAD_REQUEST);
+        }
         userService.deleteUser(userRequest.getId());
-        return ResponseEntity.noContent().build(); // Return 204 No Content on successful deletion
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
