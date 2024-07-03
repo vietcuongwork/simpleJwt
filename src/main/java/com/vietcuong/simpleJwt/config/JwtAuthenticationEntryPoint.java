@@ -20,7 +20,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException, ServletException {
         String errorMessage = (String) request.getAttribute("exception");
         if (errorMessage == null) {
-            errorMessage = "Unauthorized: Token not provided or invalid";
+            errorMessage = "Unknown error :(";
         }
         logger.error("Authentication failed: {}", errorMessage);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

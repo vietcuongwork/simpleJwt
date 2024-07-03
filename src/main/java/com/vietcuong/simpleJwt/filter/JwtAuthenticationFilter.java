@@ -1,7 +1,6 @@
 package com.vietcuong.simpleJwt.filter;
 
-import com.vietcuong.simpleJwt.exception.ExpiredJwtTokenException;
-import com.vietcuong.simpleJwt.exception.InvalidJwtTokenException;
+
 import com.vietcuong.simpleJwt.service.JwtService;
 import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.JwtException;
@@ -58,9 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
             }
-        }
-        else {
-            filterChain.doFilter(request,response);
+        } else {
+            filterChain.doFilter(request, response);
             return;
         }
         filterChain.doFilter(request, response);

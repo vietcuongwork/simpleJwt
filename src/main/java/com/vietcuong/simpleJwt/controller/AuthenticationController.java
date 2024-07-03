@@ -36,7 +36,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User userRequest) {
         // Delegate registration logic to AuthenticationService and return the response
-        if (userDetailsService.existsByUsername(userRequest.getUsername())) {
+        if (userService.existsByUsername(userRequest.getUsername())) {
             return new ResponseEntity<String>("Username has already been used", HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(authenticationService.registerResponse(userRequest));
@@ -46,10 +46,13 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User userRequest) {
         // Delegate login logic to AuthenticationService and return the response
-        if (userDetailsService.existsByUsername(userRequest.getUsername())) {
-            return ResponseEntity.ok(authenticationService.authenticationResponse(userRequest));
+        if (!userService.existsByUsername(userRequest.getUsername())) {
+            return new ResponseEntity<String>("Incorrect username", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("Incorrect username", HttpStatus.BAD_REQUEST);
+        if(!userService.checkPassword(userRequest.getUsername(), userRequest.getPassword())){
+            return new ResponseEntity<String>("Incorrect password", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(authenticationService.authenticationResponse(userRequest));
     }
 
     // Endpoint to retrieve all users as a list of strings
@@ -65,10 +68,10 @@ public class AuthenticationController {
     @DeleteMapping("/admin/deleteUser")
     public ResponseEntity<?> deleteUser(@RequestBody User userRequest) {
         // Delegate delete user logic to UserService based on user ID
-        if(!userDetailsService.existsByUsername(userRequest.getUsername())){
+        if(!userService.existsByUsername(userRequest.getUsername())){
             return new ResponseEntity<String>("User doesn't exist", HttpStatus.BAD_REQUEST);
         }
-        userService.deleteUser(userRequest.getId());
+        userService.deleteUser(userRequest.getUsername());
         return ResponseEntity.ok("User deleted successfully");
     }
 }

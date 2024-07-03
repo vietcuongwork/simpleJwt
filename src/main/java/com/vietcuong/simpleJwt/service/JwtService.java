@@ -1,10 +1,7 @@
 package com.vietcuong.simpleJwt.service;
 
 import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.exception.ExpiredJwtTokenException;
-import com.vietcuong.simpleJwt.exception.InvalidJwtTokenException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -62,23 +59,14 @@ public class JwtService {
 
     // Method to check if a JWT token is expired
     private boolean isTokenExpired(String token) {
-        if(this.extractExpirationTime(token).before(new Date())){
-            throw new ExpiredJwtTokenException("Expired jwt token");
-        }
-        return false;
+        return this.extractExpirationTime(token).before(new Date());
     }
 
     // Method to validate if a JWT token is valid for a given user details
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        if(isTokenExpired(token)){
-            throw new ExpiredJwtTokenException("Expired jwt token");
-        }
         String username = this.extractUsername(token);
         // Compare the extracted username with the username from UserDetails and check if token is not expired
-        if(!username.equals(userDetails.getUsername())){
-            throw new InvalidJwtTokenException("Invalid jwt token");
-        }
-        return true;
+        return username.equals(userDetails.getUsername()) && !this.isTokenExpired(token);
     }
 
 }
