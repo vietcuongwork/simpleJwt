@@ -63,8 +63,7 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "id: " + this.getId() + ", firstName: " + this.getFirstName() + ", lastName: " + this.getLastName() +
-                ", username: " + this.getUsername() + ", role: " + this.getRole();
+        return "id: " + this.getId() + ", firstName: " + this.getFirstName() + ", lastName: " + this.getLastName() + ", username: " + this.getUsername() + ", role: " + this.getRole();
     }
 
 

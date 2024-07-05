@@ -15,7 +15,7 @@ public class TokenService {
         this.tokenRepository = tokenRepository;
     }
 
-    public List<Token> getAllToken(){
+    public List<Token> getAllToken() {
         return tokenRepository.findAll();
     }
 
@@ -23,7 +23,7 @@ public class TokenService {
         List<String> finalList = new ArrayList<>();
         List<Token> tokenList = tokenRepository.findAll();
         for (Token token : tokenList) {
-            finalList.add(token.toString()); // Convert each user object to a string and add to finalList
+            finalList.add(token.toString());
         }
         return finalList;
     }

@@ -11,7 +11,8 @@ import java.util.Optional;
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Integer> {
 
-    // Custom query to find all tokens associated with a specific user that are not logged out
+    // Custom query to find all tokens associated with a specific user that
+    // are not logged out
     @Query("""
             Select t from Token t inner join User u
             on t.user.id = u.id

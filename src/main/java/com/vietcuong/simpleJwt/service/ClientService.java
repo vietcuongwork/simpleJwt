@@ -6,13 +6,13 @@ import com.vietcuong.simpleJwt.response.ClientResponse;
 import com.vietcuong.simpleJwt.validator.ObjectValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
     private final ObjectValidator<Client> clientObjectValidator;
-    public ClientService(ClientRepository clientRepository, ObjectValidator<Client> objectValidator) {
+
+    public ClientService(ClientRepository clientRepository,
+            ObjectValidator<Client> objectValidator) {
         this.clientRepository = clientRepository;
         this.clientObjectValidator = objectValidator;
     }

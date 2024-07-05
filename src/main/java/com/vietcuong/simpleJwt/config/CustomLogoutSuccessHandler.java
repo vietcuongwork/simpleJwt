@@ -9,14 +9,19 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
 @Component
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication) throws IOException,
+            ServletException {
         SecurityContextHolder.clearContext();
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
-        response.getWriter().write("{\"message\": \"Logged out successfully\"}");
+        response.getWriter()
+                .write("{\"message\": \"Logged out " + "successfully\"}");
     }
 }

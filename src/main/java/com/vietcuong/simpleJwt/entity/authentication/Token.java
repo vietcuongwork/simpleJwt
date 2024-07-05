@@ -1,7 +1,9 @@
 package com.vietcuong.simpleJwt.entity.authentication;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "token")
 public class Token {
@@ -16,7 +18,8 @@ public class Token {
     @Column(name = "is_logged_out")
     private boolean loggedOut;
 
-    // Defines a many-to-one relationship between the Token entity and the User entity
+    // Defines a many-to-one relationship between the Token entity and the
+    // User entity
     // The foreign key column in the "token" table is named "user_id"
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -56,7 +59,7 @@ public class Token {
 
     @Override
     public String toString() {
-        return "id: " + this.getId() + ", token: " + this.getToken() + ", loggedOut: " + this.isLoggedOut() + ", " +
-                "user: " + this.getUser().getUsername();
+        return "id: " + this.getId() + ", token: " + this.getToken() + ", " + "loggedOut: " + this.isLoggedOut() + ", " + "user: " + this.getUser()
+                .getUsername();
     }
 }

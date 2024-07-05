@@ -11,36 +11,31 @@ import java.util.List;
 
 @Service
 public class UserService {
-
-    // UserRepository dependency injection to interact with user data in the database
     private final UserRepository userRepository;
     private final UserDetailsServiceImpl userDetailsService;
     private final SecurityConfig securityConfig;
 
-    // Constructor to initialize UserRepository
-    public UserService(UserRepository userRepository, UserDetailsServiceImpl userDetailsService,
-                       SecurityConfig securityConfig) {
+    public UserService(UserRepository userRepository,
+            UserDetailsServiceImpl userDetailsService,
+            SecurityConfig securityConfig) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.securityConfig = securityConfig;
     }
 
-    // Method to retrieve all users from the database
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
-    // Method to retrieve all users and convert them to a list of string representations
     public List<String> allUsersToString() {
         List<String> finalList = new ArrayList<>();
         List<User> userList = userRepository.findAll();
         for (User user : userList) {
-            finalList.add(user.toString()); // Convert each user object to a string and add to finalList
+            finalList.add(user.toString());
         }
         return finalList;
     }
 
-    // Method to delete a user by their ID
     @Transactional
     public void deleteUser(String username) {
         userRepository.deleteByUsername(username);
@@ -51,11 +46,8 @@ public class UserService {
     }
 
     public boolean checkPassword(String username, String rawPassword) {
-        // Load the user details from the UserDetailsService by username
         User user = (User) userDetailsService.loadUserByUsername(username);
-
-        // Compare the raw password provided by the client with the stored hashed password
-        // using the password encoder configured in securityConfig
-        return securityConfig.passwordEncoder().matches(rawPassword, user.getPassword());
+        return securityConfig.passwordEncoder()
+                .matches(rawPassword, user.getPassword());
     }
 }

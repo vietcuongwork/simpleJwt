@@ -1,5 +1,6 @@
 package com.vietcuong.simpleJwt.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,7 +16,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "client", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
+@Table(name = "client", uniqueConstraints = {@UniqueConstraint(columnNames =
+        "username")})
 
 public class Client {
     @Id
@@ -29,24 +31,27 @@ public class Client {
     @Size(max = 50)
     private String fullName;
 
-    @NotNull(message = "The username cannot be empty")
+    @NotNull(message = "The username cannot be null")
     @NotEmpty(message = "The username cannot be empty")
     @Column(name = "username")
     @Size(max = 50)
     private String username;
 
-    @NotNull(message = "The password cannot be empty")
+    @NotNull(message = "The password cannot be null")
     @NotEmpty(message = "The password cannot be empty")
     @Column(name = "password")
     private String password;
 
-    @NotNull(message = "The email cannot be empty")
+    @NotNull(message = "The email cannot be null")
     @NotEmpty(message = "The email cannot be empty")
-    @Email(message = "Email is not valid")
+    @Email(message =
+            "Invalid email format. Expected format is " + "'example" +
+                    "@domain.com")
     @Column(name = "email")
     private String email;
 
     @NotNull(message = "The date of birth cannot be empty")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private Date dob;
 

@@ -2,10 +2,9 @@ package com.vietcuong.simpleJwt;
 
 import com.vietcuong.simpleJwt.repository.ClientRepository;
 import com.vietcuong.simpleJwt.repository.authentication.TokenRepository;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import jakarta.annotation.PreDestroy;
 
 @Component
 public class DatabaseManager {
@@ -14,7 +13,8 @@ public class DatabaseManager {
     private final ClientRepository clientRepository;
 
     @Autowired
-    public DatabaseManager(TokenRepository tokenRepository, ClientRepository clientRepository) {
+    public DatabaseManager(TokenRepository tokenRepository,
+            ClientRepository clientRepository) {
         this.tokenRepository = tokenRepository;
         this.clientRepository = clientRepository;
     }
