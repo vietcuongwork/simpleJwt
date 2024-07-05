@@ -23,7 +23,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             errorMessage = "Unknown error :(";
         }
         logger.error("Authentication failed: {}", errorMessage);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json");
         response.getWriter().write("{\"error\": \"" + errorMessage + "\"}");
 

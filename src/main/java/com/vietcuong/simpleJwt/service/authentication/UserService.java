@@ -1,8 +1,8 @@
-package com.vietcuong.simpleJwt.service;
+package com.vietcuong.simpleJwt.service.authentication;
 
 import com.vietcuong.simpleJwt.config.SecurityConfig;
-import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.repository.UserRepository;
+import com.vietcuong.simpleJwt.entity.authentication.User;
+import com.vietcuong.simpleJwt.repository.authentication.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

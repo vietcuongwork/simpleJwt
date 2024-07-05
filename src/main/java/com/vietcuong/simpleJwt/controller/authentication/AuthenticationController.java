@@ -1,9 +1,10 @@
-package com.vietcuong.simpleJwt.controller;
+package com.vietcuong.simpleJwt.controller.authentication;
 
-import com.vietcuong.simpleJwt.entity.AuthenticationResponse;
-import com.vietcuong.simpleJwt.entity.Token;
-import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.service.*;
+import com.vietcuong.simpleJwt.entity.authentication.User;
+import com.vietcuong.simpleJwt.service.authentication.AuthenticationService;
+import com.vietcuong.simpleJwt.service.authentication.TokenService;
+import com.vietcuong.simpleJwt.service.authentication.UserDetailsServiceImpl;
+import com.vietcuong.simpleJwt.service.authentication.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+
 public class AuthenticationController {
 
     // Service for handling authentication operations
@@ -49,7 +50,7 @@ public class AuthenticationController {
         if (!userService.existsByUsername(userRequest.getUsername())) {
             return new ResponseEntity<String>("Incorrect username", HttpStatus.BAD_REQUEST);
         }
-        if(!userService.checkPassword(userRequest.getUsername(), userRequest.getPassword())){
+        if (!userService.checkPassword(userRequest.getUsername(), userRequest.getPassword())) {
             return new ResponseEntity<String>("Incorrect password", HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(authenticationService.authenticationResponse(userRequest));
@@ -61,7 +62,7 @@ public class AuthenticationController {
         // Retrieve all users from UserService and convert to a list of strings
 
         List<String> userList = userService.allUsersToString();
-          return ResponseEntity.ok(userList);
+        return ResponseEntity.ok(userList);
     }
 
     @GetMapping("/getAllTokens")
@@ -76,7 +77,7 @@ public class AuthenticationController {
     @DeleteMapping("/admin/deleteUser")
     public ResponseEntity<?> deleteUser(@RequestBody User userRequest) {
         // Delegate delete user logic to UserService based on user ID
-        if(!userService.existsByUsername(userRequest.getUsername())){
+        if (!userService.existsByUsername(userRequest.getUsername())) {
             return new ResponseEntity<String>("User doesn't exist", HttpStatus.BAD_REQUEST);
         }
         userService.deleteUser(userRequest.getUsername());

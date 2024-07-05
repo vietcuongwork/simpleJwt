@@ -1,7 +1,7 @@
-package com.vietcuong.simpleJwt.service;
+package com.vietcuong.simpleJwt.service.authentication;
 
-import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.repository.TokenRepository;
+import com.vietcuong.simpleJwt.entity.authentication.User;
+import com.vietcuong.simpleJwt.repository.authentication.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

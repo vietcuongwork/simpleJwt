@@ -1,10 +1,10 @@
-package com.vietcuong.simpleJwt.service;
+package com.vietcuong.simpleJwt.service.authentication;
 
-import com.vietcuong.simpleJwt.entity.AuthenticationResponse;
-import com.vietcuong.simpleJwt.entity.Token;
-import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.repository.TokenRepository;
-import com.vietcuong.simpleJwt.repository.UserRepository;
+import com.vietcuong.simpleJwt.response.AuthenticationResponse;
+import com.vietcuong.simpleJwt.entity.authentication.Token;
+import com.vietcuong.simpleJwt.entity.authentication.User;
+import com.vietcuong.simpleJwt.repository.authentication.TokenRepository;
+import com.vietcuong.simpleJwt.repository.authentication.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
