@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,15 +29,20 @@ public class SecurityConfig {
 
     private final CustomLogoutHandler logoutHandler;
 
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
+
     // Constructor to initialize UserDetailsServiceImpl and JwtAuthenticationFilter instances
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, CustomLogoutHandler logoutHandler) {
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, CustomLogoutHandler logoutHandler,
+                          CustomLogoutSuccessHandler logoutSuccessHandler,
+                          CustomLogoutSuccessHandler logoutSuccessHandler1) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.logoutHandler = logoutHandler;
+        this.logoutSuccessHandler = logoutSuccessHandler1;
     }
 
     // Bean definition for SecurityFilterChain to configure security settings
@@ -53,10 +57,7 @@ public class SecurityConfig {
                 // Configure session management to be stateless
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT
                 // authentication filter before UsernamePasswordAuthenticationFilter
-                .logout(l -> l.logoutUrl("/logout").addLogoutHandler(logoutHandler).logoutSuccessHandler((request,
-                                                                                                          response,
-                                                                                                          authentication) -> SecurityContextHolder.clearContext()))
-                .build();
+                .logout(l -> l.logoutUrl("/logout").addLogoutHandler(logoutHandler).logoutSuccessHandler(logoutSuccessHandler)).build();
     }
 
     // Bean definition for PasswordEncoder to encode passwords

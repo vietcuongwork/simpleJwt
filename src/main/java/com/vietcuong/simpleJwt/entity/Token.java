@@ -53,4 +53,10 @@ public class Token {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "id: " + this.getId() + ", token: " + this.getToken() + ", loggedOut: " + this.isLoggedOut() + ", " +
+                "user: " + this.getUser().getUsername();
+    }
 }
