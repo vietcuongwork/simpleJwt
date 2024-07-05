@@ -27,14 +27,22 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+    private final CustomLogoutHandler logoutHandler;
+
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
+
     // Constructor to initialize UserDetailsServiceImpl and JwtAuthenticationFilter instances
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, CustomLogoutHandler logoutHandler,
+                          CustomLogoutSuccessHandler logoutSuccessHandler,
+                          CustomLogoutSuccessHandler logoutSuccessHandler1) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.logoutHandler = logoutHandler;
+        this.logoutSuccessHandler = logoutSuccessHandler1;
     }
 
     // Bean definition for SecurityFilterChain to configure security settings
@@ -44,14 +52,12 @@ public class SecurityConfig {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(request -> request.requestMatchers("/login/**", "/register/**").permitAll() //
 
-                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .anyRequest().authenticated()).userDetailsService(userDetailsServiceImpl).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
+                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER").requestMatchers("/admin/**").hasAuthority("ADMIN").anyRequest().authenticated()).userDetailsService(userDetailsServiceImpl).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Configure session management to be stateless
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT
                 // authentication filter before UsernamePasswordAuthenticationFilter
-                .build();
+                .logout(l -> l.logoutUrl("/logout").addLogoutHandler(logoutHandler).logoutSuccessHandler(logoutSuccessHandler)).build();
     }
 
     // Bean definition for PasswordEncoder to encode passwords

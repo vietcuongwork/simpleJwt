@@ -1,11 +1,9 @@
 package com.vietcuong.simpleJwt.controller;
 
 import com.vietcuong.simpleJwt.entity.AuthenticationResponse;
+import com.vietcuong.simpleJwt.entity.Token;
 import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.service.AuthenticationService;
-import com.vietcuong.simpleJwt.service.JwtService;
-import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
-import com.vietcuong.simpleJwt.service.UserService;
+import com.vietcuong.simpleJwt.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +21,15 @@ public class AuthenticationController {
     private final UserService userService;
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final TokenService tokenService;
 
     // Constructor to initialize AuthenticationService and UserService dependencies
     public AuthenticationController(AuthenticationService authenticationService, UserService userService,
-                                    UserDetailsServiceImpl userDetailsService) {
+                                    UserDetailsServiceImpl userDetailsService, TokenService tokenService) {
         this.authenticationService = authenticationService;
         this.userService = userService;
         this.userDetailsService = userDetailsService;
+        this.tokenService = tokenService;
     }
 
     // Endpoint to handle user registration
@@ -61,7 +61,15 @@ public class AuthenticationController {
         // Retrieve all users from UserService and convert to a list of strings
 
         List<String> userList = userService.allUsersToString();
-        return ResponseEntity.ok(userList);
+          return ResponseEntity.ok(userList);
+    }
+
+    @GetMapping("/getAllTokens")
+    public ResponseEntity<List<String>> getAllToken() {
+        // Retrieve all users from UserService and convert to a list of strings
+
+        List<String> tokenList = tokenService.allTokensToString();
+        return ResponseEntity.ok(tokenList);
     }
 
     // Endpoint to delete a user by ID (admin privilege required)
