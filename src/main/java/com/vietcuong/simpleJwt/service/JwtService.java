@@ -66,13 +66,15 @@ public class JwtService {
     }
 
     // Method to validate if a JWT token is valid for a given user details
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) throws Exception {
         // Extract the username from the JWT token
         String username = this.extractUsername(token);
 
         // Check if the token is present in the tokenRepository and is not logged out
         boolean isValidToken = tokenRepository.findByToken(token).map(t -> !t.isLoggedOut()).orElse(false);
-
+        if(!isValidToken){
+            throw new Exception("User logged out");
+        }
         // Compare the extracted username with the username from UserDetails
         // Check if the token is not expired and is valid according to the repository
         return username.equals(userDetails.getUsername()) && !this.isTokenExpired(token) && isValidToken;

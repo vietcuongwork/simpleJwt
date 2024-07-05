@@ -51,10 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                         userDetails.getAuthorities());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
-                        logger.info("JWT token validated successfully for user: {}", username);
+//                        logger.info("JWT token validated successfully for user: {}", username);
                     }
                 }
-            } catch (JwtException e) {
+            } catch (Exception e) {
                 request.setAttribute("exception", e.getMessage());
             }
         } else {
