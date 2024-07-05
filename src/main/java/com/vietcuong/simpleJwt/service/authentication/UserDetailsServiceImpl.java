@@ -1,6 +1,6 @@
-package com.vietcuong.simpleJwt.service;
+package com.vietcuong.simpleJwt.service.authentication;
 
-import com.vietcuong.simpleJwt.repository.UserRepository;
+import com.vietcuong.simpleJwt.repository.authentication.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

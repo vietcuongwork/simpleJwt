@@ -1,7 +1,7 @@
 package com.vietcuong.simpleJwt.config;
 
 import com.vietcuong.simpleJwt.filter.JwtAuthenticationFilter;
-import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
+import com.vietcuong.simpleJwt.service.authentication.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,9 +50,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
-                .authorizeHttpRequests(request -> request.requestMatchers("/login/**", "/register/**").permitAll() //
-
-                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER").requestMatchers("/admin/**").hasAuthority("ADMIN").anyRequest().authenticated()).userDetailsService(userDetailsServiceImpl).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/login/**", "/register/**", "/clientRegister/**").permitAll() //
+                        .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .anyRequest().authenticated())
+                        .userDetailsService(userDetailsServiceImpl)
+                        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Configure session management to be stateless
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT

@@ -1,8 +1,7 @@
-package com.vietcuong.simpleJwt.service;
+package com.vietcuong.simpleJwt.service.authentication;
 
-import com.vietcuong.simpleJwt.entity.Token;
-import com.vietcuong.simpleJwt.entity.User;
-import com.vietcuong.simpleJwt.repository.TokenRepository;
+import com.vietcuong.simpleJwt.entity.authentication.Token;
+import com.vietcuong.simpleJwt.repository.authentication.TokenRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

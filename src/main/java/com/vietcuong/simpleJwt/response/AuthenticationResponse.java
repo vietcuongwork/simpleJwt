@@ -1,10 +1,7 @@
-package com.vietcuong.simpleJwt.entity;
+package com.vietcuong.simpleJwt.response;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 // Class representing the authentication response containing a token
 @Setter

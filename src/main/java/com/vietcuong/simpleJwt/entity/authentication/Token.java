@@ -1,4 +1,4 @@
-package com.vietcuong.simpleJwt.entity;
+package com.vietcuong.simpleJwt.entity.authentication;
 
 import jakarta.persistence.*;
 

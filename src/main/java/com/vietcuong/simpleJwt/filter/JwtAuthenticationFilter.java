@@ -1,9 +1,8 @@
 package com.vietcuong.simpleJwt.filter;
 
 
-import com.vietcuong.simpleJwt.service.JwtService;
-import com.vietcuong.simpleJwt.service.UserDetailsServiceImpl;
-import io.jsonwebtoken.JwtException;
+import com.vietcuong.simpleJwt.service.authentication.JwtService;
+import com.vietcuong.simpleJwt.service.authentication.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

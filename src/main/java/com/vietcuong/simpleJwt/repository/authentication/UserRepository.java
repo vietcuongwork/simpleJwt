@@ -1,6 +1,6 @@
-package com.vietcuong.simpleJwt.repository;
+package com.vietcuong.simpleJwt.repository.authentication;
 
-import com.vietcuong.simpleJwt.entity.User;
+import com.vietcuong.simpleJwt.entity.authentication.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
