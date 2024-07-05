@@ -1,5 +1,6 @@
 package com.vietcuong.simpleJwt.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -42,11 +43,12 @@ public class Client {
 
     @NotNull(message = "The email cannot be empty")
     @NotEmpty(message = "The email cannot be empty")
-    @Email(message = "Email is not valid")
+    @Email(message = "Invalid email format. Expected format is 'example@domain.com")
     @Column(name = "email")
     private String email;
 
     @NotNull(message = "The date of birth cannot be empty")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private Date dob;
 
