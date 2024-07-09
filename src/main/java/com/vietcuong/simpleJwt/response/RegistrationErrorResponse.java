@@ -8,5 +8,5 @@ import java.util.Map;
 public class RegistrationErrorResponse {
     private String statusCode;
     private String message;
-    private String detail;
+    private Map<String, String> detail;
 }
