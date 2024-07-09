@@ -1,5 +1,6 @@
 package com.vietcuong.simpleJwt.validator;
 
+import com.vietcuong.simpleJwt.Error;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

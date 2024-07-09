@@ -1,20 +1,19 @@
 package com.vietcuong.simpleJwt.handler;
 
-import com.vietcuong.simpleJwt.entity.Client;
+import com.vietcuong.simpleJwt.Error;
+import com.vietcuong.simpleJwt.response.RegistrationErrorResponse;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.lang.reflect.Field;
 import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.zip.DataFormatException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -25,19 +24,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-/*    @ExceptionHandler(ObjectNotValidException.class)
-    public ResponseEntity<?> handleException(
-            ObjectNotValidException objectNotValidException) {
-        return ResponseEntity.badRequest()
-                .body(objectNotValidException.getErrorMessage());
-    }*/
-
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         Throwable rootCause = ex.getRootCause();
         if (rootCause instanceof DateTimeParseException) {
-            return ResponseEntity
-                    .badRequest()
+            return ResponseEntity.badRequest()
                     .body(Map.of("error", "Invalid date format. Expected format is yyyy-MM-dd"));
         }
 
@@ -46,10 +37,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("error", errorMessage.trim()));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    /*@ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(
-            MethodArgumentNotValidException e) {
+    public Map<String, String> handleValidationException(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
         // Iterate through each validation error
         e.getBindingResult().getAllErrors().forEach((error) -> {
@@ -74,9 +64,46 @@ public class GlobalExceptionHandler {
             }
         }
         // Print all errors to the console for debugging
-        errors.forEach((field, error) -> System.out.println(
-                "Field: " + field + ", Error: " + error));
+        errors.forEach((field, error) -> System.out.println("Field: " + field + ", Error: " + error));
         // Return map containing field names and error messages
         return sortedErrors;
+    }*/
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RegistrationErrorResponse handleValidationException(MethodArgumentNotValidException e) {
+        RegistrationErrorResponse response = new RegistrationErrorResponse();
+        if (!e.getBindingResult().getAllErrors().isEmpty()) {
+            String fieldName = e.getBindingResult().getFieldError().getField();
+            String errorMessage = e.getBindingResult().getFieldError().getDefaultMessage();
+            response.setDetail(errorMessage);
+            switch (fieldName) {
+                case "fullName":
+                    response.setStatusCode(Error.ClientRegisterValidationError.INVALID_FULL_NAME.getCode());
+                    response.setMessage(Error.ClientRegisterValidationError.INVALID_FULL_NAME.getMessage());
+                    break;
+                case "username":
+                    response.setStatusCode(Error.ClientRegisterValidationError.INVALID_USERNAME.getCode());
+                    response.setMessage(Error.ClientRegisterValidationError.INVALID_USERNAME.getMessage());
+                    break;
+                case "email":
+                    response.setStatusCode(Error.ClientRegisterValidationError.INVALID_EMAIL.getCode());
+                    response.setMessage(Error.ClientRegisterValidationError.INVALID_EMAIL.getMessage());
+                    break;
+                default:
+                    response.setStatusCode(Error.ClientRegisterValidationError.INVALID_DATE_OF_BIRTH.getCode());
+                    response.setMessage(Error.ClientRegisterValidationError.INVALID_DATE_OF_BIRTH.getMessage());
+                    break;
+            }
+        }
+
+        // Return the single error response
+        return response;
     }
 }
+
+/*    @ExceptionHandler(ObjectNotValidException.class)
+    public ResponseEntity<?> handleException(
+            ObjectNotValidException objectNotValidException) {
+        return ResponseEntity.badRequest()
+                .body(objectNotValidException.getErrorMessage());
+    }*/
