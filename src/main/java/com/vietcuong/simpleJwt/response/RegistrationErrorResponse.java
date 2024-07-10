@@ -7,6 +7,6 @@ import java.util.Map;
 @Data
 public class RegistrationErrorResponse {
     private String statusCode;
-    private String message;
+    private String description;
     private Map<String, String> detail;
 }

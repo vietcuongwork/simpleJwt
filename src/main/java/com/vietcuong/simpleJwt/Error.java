@@ -1,27 +1,28 @@
 package com.vietcuong.simpleJwt;
 
 public class Error {
-    public String SUCCESS_CODE = "00";
-    public String SUCCESS_MESSAGE = "";
 
     public static enum GlobalError {
-        CLIENT_REGISTRATION_ERROR("01", "CLIENT_REGISTRATION_ERROR");
+        CLIENT_REGISTRATION_SUCCESS("00", "CLIENT_REGISTRATION_SUCCESS"),
+        USER_REGISTRATION_SUCCESS("00", "USER_REGISTRATION_SUCCESS"),
+        CLIENT_REGISTRATION_ERROR("01", "CLIENT_REGISTRATION_ERROR"),
+        USER_REGISTRATION_ERROR("02", "USER_REGISTRATION_ERROR");
 
 
         private final String code;
-        private final String message;
+        private final String description;
 
-        GlobalError(String code, String message) {
+        GlobalError(String code, String description) {
             this.code = code;
-            this.message = message;
+            this.description = description;
         }
 
         public String getCode() {
             return this.code;
         }
 
-        public String getMessage() {
-            return this.message;
+        public String getDescription() {
+            return this.description;
         }
     }
 }

@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     public RegistrationErrorResponse handleDuplicateUsernameException() {
         RegistrationErrorResponse response = new RegistrationErrorResponse();
         response.setStatusCode(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getCode());
-        response.setMessage(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getMessage());
+        response.setDescription(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getDescription());
         Map<String, String> error = new HashMap<>();
         error.put("username", "Username already exists");
         response.setDetail(error);
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     public RegistrationErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         RegistrationErrorResponse response = new RegistrationErrorResponse();
         response.setStatusCode(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getCode());
-        response.setMessage(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getMessage());
+        response.setDescription(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getDescription());
         Throwable rootCause = ex.getRootCause();
         Map<String, String> error = new HashMap<>();
         if (rootCause instanceof DateTimeParseException) {
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     public RegistrationErrorResponse handleValidationException(MethodArgumentNotValidException e) {
         RegistrationErrorResponse response = new RegistrationErrorResponse();
         response.setStatusCode(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getCode());
-        response.setMessage(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getMessage());
+        response.setDescription(Error.GlobalError.CLIENT_REGISTRATION_ERROR.getDescription());
         Map<String, String> errors = new HashMap<>();
         // Iterate through each validation error
         e.getBindingResult().getAllErrors().forEach((error) -> {
